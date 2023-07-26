@@ -19,3 +19,7 @@
 .active-filter {
   background-color: #bb8dc7;
 }
+
+.is-done {
+  opacity: .5;
+}

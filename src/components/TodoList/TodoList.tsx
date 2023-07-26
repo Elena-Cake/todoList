@@ -18,7 +18,7 @@ export const TodoList: React.FC<PropsType> = ({ title, tasks, filter, addTask, c
   const [error, setError] = useState(null as string | null)
 
   const tasksElements = tasks.map(task =>
-    <li key={task.id}>
+    <li key={task.id} className={task.isDone ? 'is-done' : ''}>
       <input type='checkbox' checked={task.isDone} onChange={() => onCheckboxChange(task.id)} />
       <span>{task.title}</span>
       <button onClick={() => { removeTask(task.id) }}>x</button>
