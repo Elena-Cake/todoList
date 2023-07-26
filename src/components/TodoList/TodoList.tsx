@@ -6,10 +6,10 @@ type PropsType = {
   idList: string
   title: string,
   tasks: taskType[],
-  removeTask: (id: string) => void,
+  removeTask: (id: string, idList: string) => void,
   changeFilter: (filter: FilterValuesType, idList: string) => void,
-  addTask: (title: string) => void,
-  onCheckboxChange: (id: string) => void,
+  addTask: (title: string, idList: string) => void,
+  onCheckboxChange: (idTask: string, idList: string) => void,
   filter: FilterValuesType
 }
 
@@ -20,9 +20,9 @@ export const TodoList: React.FC<PropsType> = ({ idList, title, tasks, filter, ad
 
   const tasksElements = tasks.map(task =>
     <li key={task.id} className={task.isDone ? 'is-done' : ''}>
-      <input type='checkbox' checked={task.isDone} onChange={() => onCheckboxChange(task.id)} />
+      <input type='checkbox' checked={task.isDone} onChange={() => onCheckboxChange(task.id, idList)} />
       <span>{task.title}</span>
-      <button onClick={() => { removeTask(task.id) }}>x</button>
+      <button onClick={() => { removeTask(task.id, idList) }}>x</button>
     </li>
   )
 
@@ -32,7 +32,7 @@ export const TodoList: React.FC<PropsType> = ({ idList, title, tasks, filter, ad
       setError('empty task')
       return
     }
-    addTask(inputValue)
+    addTask(inputValue, idList)
     setError(null)
     setInputValue('')
   }

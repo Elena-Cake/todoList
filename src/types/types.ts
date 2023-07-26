@@ -1,8 +1,7 @@
 export type todoListType = {
     id: string,
     title: string,
-    filter: FilterValuesType,
-    tasks: taskType[]
+    filter: FilterValuesType
 }
 
 export type taskType = {
