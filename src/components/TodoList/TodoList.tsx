@@ -3,16 +3,17 @@ import './TodoList.css';
 import { FilterValuesType, taskType } from '../../types/types';
 
 type PropsType = {
+  idList: string
   title: string,
   tasks: taskType[],
   removeTask: (id: string) => void,
-  changeFilter: (filter: FilterValuesType) => void,
+  changeFilter: (filter: FilterValuesType, idList: string) => void,
   addTask: (title: string) => void,
   onCheckboxChange: (id: string) => void,
   filter: FilterValuesType
 }
 
-export const TodoList: React.FC<PropsType> = ({ title, tasks, filter, addTask, changeFilter, removeTask, onCheckboxChange }) => {
+export const TodoList: React.FC<PropsType> = ({ idList, title, tasks, filter, addTask, changeFilter, removeTask, onCheckboxChange }) => {
 
   const [inputValue, setInputValue] = useState('')
   const [error, setError] = useState(null as string | null)
@@ -57,17 +58,17 @@ export const TodoList: React.FC<PropsType> = ({ title, tasks, filter, addTask, c
           {tasksElements}
         </ul>
         <div>
-          <button onClick={() => changeFilter('all')}
+          <button onClick={() => changeFilter('all', idList)}
             className={filter === 'all' ? 'active-filter' : ''}
           >
             All
           </button>
-          <button onClick={() => changeFilter('active')}
+          <button onClick={() => changeFilter('active', idList)}
             className={filter === 'active' ? 'active-filter' : ''}
           >
             Active
           </button>
-          <button onClick={() => changeFilter('completed')}
+          <button onClick={() => changeFilter('completed', idList)}
             className={filter === 'completed' ? 'active-filter' : ''}
           >
             Completed
