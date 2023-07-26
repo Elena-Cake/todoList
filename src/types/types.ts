@@ -1,5 +1,5 @@
 export type taskType = {
-    id: number,
+    id: string,
     title: string,
     isDone: boolean
 }
