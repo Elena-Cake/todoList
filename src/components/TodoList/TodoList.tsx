@@ -8,41 +8,70 @@ type PropsType = {
   removeTask: (id: string) => void,
   changeFilter: (filter: FilterValuesType) => void,
   addTask: (title: string) => void,
-  onCheckboxChange: (id: string) => void
+  onCheckboxChange: (id: string) => void,
+  filter: FilterValuesType
 }
 
-export const TodoList: React.FC<PropsType> = ({ title, tasks, addTask, changeFilter, removeTask, onCheckboxChange }) => {
+export const TodoList: React.FC<PropsType> = ({ title, tasks, filter, addTask, changeFilter, removeTask, onCheckboxChange }) => {
 
   const [inputValue, setInputValue] = useState('')
+  const [error, setError] = useState(null as string | null)
 
   const tasksElements = tasks.map(task =>
     <li key={task.id}>
-      <input type='checkbox' checked={task.isDone} onClick={() => onCheckboxChange(task.id)} />
+      <input type='checkbox' checked={task.isDone} onChange={() => onCheckboxChange(task.id)} />
       <span>{task.title}</span>
       <button onClick={() => { removeTask(task.id) }}>x</button>
     </li>
   )
+
   const handleAddTask = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+    if (inputValue.trim() === '') {
+      setError('empty task')
+      return
+    }
     addTask(inputValue)
+    setError(null)
     setInputValue('')
+  }
+
+  const onInputValueChange = (e: React.FormEvent<HTMLInputElement>) => {
+    setError(null)
+    setInputValue(e.currentTarget.value)
   }
 
   return (
     <div className="todo">
       <div className='todo__list'>
         <h3>{title}</h3>
-        <form onSubmit={(e) => handleAddTask(e)}>
-          <input value={inputValue} onChange={(e) => { setInputValue(e.target.value) }} />
+        <form onSubmit={handleAddTask}>
+          <input value={inputValue}
+            onChange={onInputValueChange}
+            className={`${error ? 'error' : ''}`}
+          />
           <button >+</button>
+          <span className={`error-message`}>{error}</span>
         </form>
         <ul>
           {tasksElements}
         </ul>
         <div>
-          <button onClick={() => changeFilter('all')}>All</button>
-          <button onClick={() => changeFilter('active')}>Active</button>
-          <button onClick={() => changeFilter('completed')}>Completed</button>
+          <button onClick={() => changeFilter('all')}
+            className={filter === 'all' ? 'active-filter' : ''}
+          >
+            All
+          </button>
+          <button onClick={() => changeFilter('active')}
+            className={filter === 'active' ? 'active-filter' : ''}
+          >
+            Active
+          </button>
+          <button onClick={() => changeFilter('completed')}
+            className={filter === 'completed' ? 'active-filter' : ''}
+          >
+            Completed
+          </button>
         </div>
       </div>
     </div>
