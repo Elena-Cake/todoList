@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import './App.css';
 import { TodoList } from './components/TodoList/TodoList';
 import { FilterValuesType, taskType, todoListType } from './types/types';
@@ -29,7 +29,6 @@ function App() {
     [idList1]: initTasks,
     [idList2]: initTasks2
   })
-  // const [tasksForTodoList, setTasksForTodoList] = useState<taskType[]>(tasks)
 
   const addTask = (task: string, todoListsId: string) => {
     tasks[todoListsId] = [{ id: v1(), title: task, isDone: false }, ...tasks[todoListsId]]
@@ -56,6 +55,12 @@ function App() {
     }
   }
 
+  const removeList = (idList: string) => {
+    setTodoLists(todoLists.filter(list => list.id !== idList))
+    delete tasks[idList]
+    setTasks({ ...tasks })
+  }
+
   const todoListsElements = todoLists.map((list) => {
     let tasksForTodoList = tasks[list.id]
     if (list.filter === 'completed') {
@@ -75,6 +80,7 @@ function App() {
         addTask={addTask}
         onCheckboxChange={onCheckboxChange}
         filter={list.filter}
+        removeList={removeList}
       />
     )
   })

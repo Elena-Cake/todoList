@@ -10,10 +10,14 @@ type PropsType = {
   changeFilter: (filter: FilterValuesType, idList: string) => void,
   addTask: (title: string, idList: string) => void,
   onCheckboxChange: (idTask: string, idList: string) => void,
-  filter: FilterValuesType
+  filter: FilterValuesType,
+  removeList: (idList: string) => void
 }
 
-export const TodoList: React.FC<PropsType> = ({ idList, title, tasks, filter, addTask, changeFilter, removeTask, onCheckboxChange }) => {
+export const TodoList: React.FC<PropsType> = ({
+  idList, title, tasks, filter, addTask, changeFilter,
+  removeTask, onCheckboxChange, removeList
+}) => {
 
   const [inputValue, setInputValue] = useState('')
   const [error, setError] = useState(null as string | null)
@@ -45,7 +49,10 @@ export const TodoList: React.FC<PropsType> = ({ idList, title, tasks, filter, ad
   return (
     <div className="todo">
       <div className='todo__list'>
-        <h3>{title}</h3>
+        <div style={{ display: 'flex', alignItems: "center" }}>
+          <h3>{title}</h3>
+          <button onClick={() => removeList(idList)} >x</button>
+        </div>
         <form onSubmit={handleAddTask}>
           <input value={inputValue}
             onChange={onInputValueChange}
@@ -75,7 +82,7 @@ export const TodoList: React.FC<PropsType> = ({ idList, title, tasks, filter, ad
           </button>
         </div>
       </div>
-    </div>
+    </div >
   );
 }
 
