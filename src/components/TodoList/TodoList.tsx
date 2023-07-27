@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import './TodoList.css';
 import { FilterValuesType, taskType } from '../../types/types';
+import { AddItemForm } from '../AddItemForm/AddItemForm';
 
 type PropsType = {
   idList: string
@@ -30,15 +31,8 @@ export const TodoList: React.FC<PropsType> = ({
     </li>
   )
 
-  const handleAddTask = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    if (inputValue.trim() === '') {
-      setError('empty task')
-      return
-    }
+  const handleAddTask = (inputValue: string) => {
     addTask(inputValue, idList)
-    setError(null)
-    setInputValue('')
   }
 
   const onInputValueChange = (e: React.FormEvent<HTMLInputElement>) => {
@@ -53,14 +47,7 @@ export const TodoList: React.FC<PropsType> = ({
           <h3>{title}</h3>
           <button onClick={() => removeList(idList)} >x</button>
         </div>
-        <form onSubmit={handleAddTask}>
-          <input value={inputValue}
-            onChange={onInputValueChange}
-            className={`${error ? 'error' : ''}`}
-          />
-          <button >+</button>
-          <span className={`error-message`}>{error}</span>
-        </form>
+        <AddItemForm addItem={handleAddTask} />
         <ul>
           {tasksElements}
         </ul>

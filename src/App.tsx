@@ -3,6 +3,7 @@ import './App.css';
 import { TodoList } from './components/TodoList/TodoList';
 import { FilterValuesType, taskType, todoListType } from './types/types';
 import { v1 } from 'uuid';
+import { AddItemForm } from './components/AddItemForm/AddItemForm';
 
 const initTasks: taskType[] = [
   { id: v1(), isDone: true, title: 'react' },
@@ -19,7 +20,7 @@ const idList1 = v1()
 const idList2 = v1()
 const initTodoLists: todoListType[] = [
   { id: idList1, title: 'What to learn', filter: 'all' },
-  { id: idList2, title: 'What to do', filter: 'active' },
+  { id: idList2, title: 'What to do', filter: 'all' },
 ]
 
 function App() {
@@ -61,6 +62,12 @@ function App() {
     setTasks({ ...tasks })
   }
 
+  const addTodoList = (title: string) => {
+    const newTodoList = { id: v1(), title: title, filter: 'all' as FilterValuesType }
+    setTodoLists([newTodoList, ...todoLists])
+    setTasks({ [newTodoList.id]: [], ...tasks })
+  }
+
   const todoListsElements = todoLists.map((list) => {
     let tasksForTodoList = tasks[list.id]
     if (list.filter === 'completed') {
@@ -87,6 +94,7 @@ function App() {
 
   return (
     <div className="App">
+      <AddItemForm addItem={addTodoList} />
       {todoListsElements}
     </div>
   );
