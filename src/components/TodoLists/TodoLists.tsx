@@ -15,23 +15,6 @@ export const TodoLists = () => {
     const todoLists = useAppSelector(state => state.todoLists.todoLists)
     const tasks = useAppSelector(state => state.todoLists.tasks)
 
-    const onCheckboxChange = (idTask: string, todoListsId: string) => {
-        const changedTasksList = tasks[todoListsId].map(task => {
-            if (task.id === idTask) return { ...task, isDone: !task.isDone };
-            return task;
-        });
-        // setTasks({ ...tasks, [todoListsId]: changedTasksList });
-    };
-
-    const changeFilter = (filter: FilterValuesType, todoListsId: string) => {
-        let tl = todoLists.find(tl => tl.id === todoListsId);
-        if (tl) {
-            tl.filter = filter;
-            // setTodoLists([...todoLists]);
-        }
-    };
-
-
     const handleAddTodoList = (title: string) => {
         dispatch(addTodoList({ title: title }))
     };
@@ -50,8 +33,6 @@ export const TodoLists = () => {
                 idList={list.id}
                 title={list.title}
                 tasks={tasksForTodoList}
-                changeFilter={changeFilter}
-                onCheckboxChange={onCheckboxChange}
                 filter={list.filter} />
         );
     });

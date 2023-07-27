@@ -4,15 +4,14 @@ import { TitleEdit } from '../../TitleEdit/TitleEdit';
 import { Checkbox } from 'primereact/checkbox';
 import { Button } from 'primereact/button';
 import { useAppDispatch } from '../../../store/store';
-import { changeTaskText, removeTask } from '../../../store/todoSlice';
+import { changeCheckboxTask, changeTaskText, removeTask } from '../../../store/todoSlice';
 
 type TaskPropsType = {
     task: taskType;
     idList: string;
-    onCheckboxChange: (idTask: string, idList: string) => void;
 };
 
-export const Task: React.FC<TaskPropsType> = ({ task, idList, onCheckboxChange }) => {
+export const Task: React.FC<TaskPropsType> = ({ task, idList }) => {
 
     const dispatch = useAppDispatch()
     const handleChangeTask = (text: string) => {
@@ -23,7 +22,7 @@ export const Task: React.FC<TaskPropsType> = ({ task, idList, onCheckboxChange }
     return (
         <li key={task.id} className={`${task.isDone ? 'is-done' : ''} p-inputgroup edit-group`}>
             <span className="p-inputgroup-addon">
-                <Checkbox checked={task.isDone} onChange={() => onCheckboxChange(task.id, idList)} />
+                <Checkbox checked={task.isDone} onChange={() => dispatch(changeCheckboxTask({ idTask: task.id, todoListsId: idList }))} />
             </span>
             <TitleEdit title={task.title} editTitle={handleChangeTask} />
             <Button icon="pi pi-times" className="p-button-danger" onClick={() => { dispatch(removeTask({ idTask: task.id, todoListsId: idList })) }} />

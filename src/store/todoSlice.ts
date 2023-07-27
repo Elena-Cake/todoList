@@ -21,7 +21,7 @@ const initialState = {
             { id: v1(), isDone: false, title: 'learn' },
             { id: v1(), isDone: true, title: 'codding' },
         ] as taskType[]
-    }
+    } as { [key: string]: taskType[] }
 }
 
 // export const getReport = createAsyncThunk(
@@ -52,6 +52,12 @@ const todoSlice = createSlice({
                 return list
             })
         },
+        changeFilter(state, action: PayloadAction<{ filter: FilterValuesType, todoListsId: string }>) {
+            const todoList = state.todoLists.find(list => list.id === action.payload.todoListsId)
+            if (todoList) {
+                todoList.filter = action.payload.filter;
+            }
+        },
         // tasks
         addTask(state, action: PayloadAction<{ task: string, todoListsId: string }>) {
             state.tasks[action.payload.todoListsId] = [
@@ -70,6 +76,13 @@ const todoSlice = createSlice({
                 if (task.id === action.payload.idTask) { return { ...task, title: action.payload.text }; }
                 return task
             })
+        },
+        changeCheckboxTask(state, action: PayloadAction<{ idTask: string, todoListsId: string }>) {
+            state.tasks[action.payload.todoListsId] = state.tasks[action.payload.todoListsId].map(task => {
+                if (task.id === action.payload.idTask) return { ...task, isDone: !task.isDone };
+                return task;
+            });
+            // setTasks({ ...tasks, [todoListsId]: changedTasksList });
         }
 
     },
@@ -85,8 +98,8 @@ const todoSlice = createSlice({
     }
 })
 export const {
-    addTodoList, removeList, changeListTitle,
-    addTask, removeTask, changeTaskText
+    addTodoList, removeList, changeListTitle, changeFilter,
+    addTask, removeTask, changeTaskText, changeCheckboxTask
 } = todoSlice.actions
 export default todoSlice.reducer
 
