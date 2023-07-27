@@ -37,8 +37,8 @@ export const AddItemForm: React.FC<PropsType> = ({
         onChange={onInputValueChange}
         className={`${error ? 'error' : ''}`}
       />
-      <Button icon="pi pi-check" className="p-button-success" />
       <span className={`error-message`}>{error}</span>
+      <Button icon="pi pi-check" className="p-button-success" />
     </form>
 
   );
