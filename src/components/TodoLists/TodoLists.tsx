@@ -4,39 +4,16 @@ import { TodoList } from '../TodoList/TodoList';
 import { FilterValuesType, taskType, todoListType } from '../../types/types';
 import { v1 } from 'uuid';
 import { AddItemForm } from '../AddItemForm/AddItemForm';
-import { useAppSelector } from '../../store/store';
+import { useAppDispatch, useAppSelector } from '../../store/store';
+import { addTodoList } from '../../store/todoSlice';
 
-const initTasks: taskType[] = [
-    { id: v1(), isDone: true, title: 'react' },
-    { id: v1(), isDone: false, title: 'ts' },
-    { id: v1(), isDone: true, title: 'css' },
-    { id: v1(), isDone: true, title: 'redux' },
-]
-const initTasks2: taskType[] = [
-    { id: v1(), isDone: false, title: 'learn' },
-    { id: v1(), isDone: true, title: 'codding' },
-]
-
-const idList1 = v1()
-const idList2 = v1()
-const initTodoLists: todoListType[] = [
-    { id: idList1, title: 'What to learn', filter: 'all' },
-    { id: idList2, title: 'What to do', filter: 'all' },
-]
 
 export const TodoLists = () => {
 
-    const todoLists = useAppSelector(state => state.todoLists.initTodoLists)
-    const tasks = useAppSelector(state => state.todoLists.tasks)
+    const dispatch = useAppDispatch()
 
-    const addTask = (task: string, todoListsId: string) => {
-        tasks[todoListsId] = [{ id: v1(), title: task, isDone: false }, ...tasks[todoListsId]];
-        // setTasks({ ...tasks });
-    };
-    const removeTask = (idTask: string, todoListsId: string) => {
-        const filteredTasks = tasks[todoListsId].filter(task => task.id !== idTask);
-        // setTasks({ ...tasks, [todoListsId]: filteredTasks });
-    };
+    const todoLists = useAppSelector(state => state.todoLists.todoLists)
+    const tasks = useAppSelector(state => state.todoLists.tasks)
 
     const onCheckboxChange = (idTask: string, todoListsId: string) => {
         const changedTasksList = tasks[todoListsId].map(task => {
@@ -69,16 +46,8 @@ export const TodoLists = () => {
         // }));
     };
 
-    const removeList = (idList: string) => {
-        // setTodoLists(todoLists.filter(list => list.id !== idList));
-        delete tasks[idList];
-        // setTasks({ ...tasks });
-    };
-
-    const addTodoList = (title: string) => {
-        const newTodoList = { id: v1(), title: title, filter: 'all' as FilterValuesType };
-        // setTodoLists([newTodoList, ...todoLists]);
-        // setTasks({ [newTodoList.id]: [], ...tasks });
+    const handleAddTodoList = (title: string) => {
+        dispatch(addTodoList({ title: title }))
     };
 
     const todoListsElements = todoLists.map((list) => {
@@ -95,11 +64,9 @@ export const TodoLists = () => {
                 idList={list.id}
                 title={list.title}
                 tasks={tasksForTodoList}
-                removeTask={removeTask}
                 changeFilter={changeFilter}
                 onCheckboxChange={onCheckboxChange}
                 filter={list.filter}
-                removeList={removeList}
                 changeTask={changeTask}
                 changeTitle={changeTitle} />
         );
@@ -108,7 +75,7 @@ export const TodoLists = () => {
     return (
         <>
             <div className='app__addlist'>
-                <AddItemForm addItem={addTodoList} />
+                <AddItemForm addItem={handleAddTodoList} />
             </div>
             <div className='app__lists'>
                 {todoListsElements}
