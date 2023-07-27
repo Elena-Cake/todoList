@@ -1,7 +1,8 @@
 .todo__list {
-  align-self: center;
+  width: 400px;
   text-align: center;
   position: relative;
+  margin-bottom: 20px;
 }
 
 .btn-close {

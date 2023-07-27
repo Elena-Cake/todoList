@@ -7,6 +7,7 @@ import { Card } from 'primereact/card';
 import { Checkbox } from 'primereact/checkbox';
 import { Button } from 'primereact/button';
 import { SelectButton, SelectButtonChangeEvent } from 'primereact/selectbutton';
+import { Task } from './Task/Task';
 
 type PropsType = {
   idList: string
@@ -29,16 +30,12 @@ export const TodoList: React.FC<PropsType> = ({
 }) => {
 
   const tasksElements = tasks.map(task => {
-    const handleChangeTask = (text: string) => {
-      changeTask(text, idList, task.id)
-    }
-    return <li key={task.id} className={`${task.isDone ? 'is-done' : ''} p-inputgroup edit-group`}>
-      <span className="p-inputgroup-addon">
-        <Checkbox checked={task.isDone} onChange={() => onCheckboxChange(task.id, idList)} />
-      </span>
-      <TitleEdit title={task.title} editTitle={handleChangeTask} />
-      <Button icon="pi pi-times" className="p-button-danger" onClick={() => { removeTask(task.id, idList) }} />
-    </li>
+    return <Task
+      idList={idList} task={task}
+      onCheckboxChange={onCheckboxChange}
+      changeTask={changeTask}
+      removeTask={removeTask}
+    />
   })
 
 
@@ -59,19 +56,18 @@ export const TodoList: React.FC<PropsType> = ({
   }
 
   return (
-    <div className="todo">
-      <Card className='todo__list' >
-        <h2> <TitleEdit title={title} editTitle={handleChangeTitle} /></h2>
-        <Button onClick={() => removeList(idList)} icon="pi pi-times" className="p-button-danger btn-close" />
-        <AddItemForm addItem={handleAddTask} />
-        <ul>
-          {tasksElements}
-        </ul>
-        <div className="card flex justify-content-center">
-          <SelectButton value={value} onChange={handleChangeFilter} options={options} />
-        </div>
-      </Card >
-    </div >
+    <Card className='todo__list' >
+      <h2> <TitleEdit title={title} editTitle={handleChangeTitle} /></h2>
+      <Button onClick={() => removeList(idList)} icon="pi pi-times" className="p-button-danger btn-close" />
+      <AddItemForm addItem={handleAddTask} />
+      <ul>
+        {tasksElements}
+      </ul>
+      <div className="card flex justify-content-center">
+        <SelectButton value={value} onChange={handleChangeFilter} options={options} />
+      </div>
+    </Card >
   );
 }
+
 
