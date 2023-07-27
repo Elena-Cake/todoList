@@ -3,6 +3,7 @@ import './TodoList.css';
 import { FilterValuesType, taskType } from '../../types/types';
 import { AddItemForm } from '../AddItemForm/AddItemForm';
 import { TitleEdit } from '../TitleEdit/TitleEdit';
+import { Card } from 'primereact/card';
 
 type PropsType = {
   idList: string
@@ -46,7 +47,7 @@ export const TodoList: React.FC<PropsType> = ({
 
   return (
     <div className="todo">
-      <div className='todo__list'>
+      <Card className='todo__list'>
         <div style={{ display: 'flex', alignItems: "center" }}>
           <TitleEdit title={title} editTitle={handleChangeTitle} />
           <button onClick={() => removeList(idList)} >x</button>
@@ -72,7 +73,7 @@ export const TodoList: React.FC<PropsType> = ({
             Completed
           </button>
         </div>
-      </div>
+      </Card >
     </div >
   );
 }

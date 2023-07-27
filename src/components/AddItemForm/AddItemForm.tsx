@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
 
+import { InputText } from 'primereact/inputtext';
+import { Button } from 'primereact/button';
+
 type PropsType = {
   addItem: (title: string) => void
 }
@@ -29,12 +32,14 @@ export const AddItemForm: React.FC<PropsType> = ({
 
   return (
 
-    <form onSubmit={handleAddTask}>
-      <input value={inputValue}
+    <form onSubmit={handleAddTask} className="p-inputgroup">
+
+      <InputText value={inputValue}
         onChange={onInputValueChange}
         className={`${error ? 'error' : ''}`}
       />
-      <button >+</button>
+
+      <Button icon="pi pi-check" className="p-button-success" />
       <span className={`error-message`}>{error}</span>
     </form>
 

@@ -5,6 +5,9 @@ import { FilterValuesType, taskType, todoListType } from './types/types';
 import { v1 } from 'uuid';
 import { AddItemForm } from './components/AddItemForm/AddItemForm';
 
+import "primereact/resources/themes/lara-light-indigo/theme.css";
+import "primereact/resources/primereact.min.css";
+
 const initTasks: taskType[] = [
   { id: v1(), isDone: true, title: 'react' },
   { id: v1(), isDone: false, title: 'ts' },
@@ -111,8 +114,12 @@ function App() {
 
   return (
     <div className="App">
-      <AddItemForm addItem={addTodoList} />
-      {todoListsElements}
+      <div className='app__addlist'>
+        <AddItemForm addItem={addTodoList} />
+      </div>
+      <div className='app__lists'>
+        {todoListsElements}
+      </div>
     </div>
   );
 }
