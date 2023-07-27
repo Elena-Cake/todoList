@@ -4,6 +4,9 @@ import { FilterValuesType, taskType } from '../../types/types';
 import { AddItemForm } from '../AddItemForm/AddItemForm';
 import { TitleEdit } from '../TitleEdit/TitleEdit';
 import { Card } from 'primereact/card';
+import { Checkbox } from 'primereact/checkbox';
+import { Button } from 'primereact/button';
+import { SelectButton, SelectButtonChangeEvent } from 'primereact/selectbutton';
 
 type PropsType = {
   idList: string
@@ -29,10 +32,12 @@ export const TodoList: React.FC<PropsType> = ({
     const handleChangeTask = (text: string) => {
       changeTask(text, idList, task.id)
     }
-    return <li key={task.id} className={task.isDone ? 'is-done' : ''}>
-      <input type='checkbox' checked={task.isDone} onChange={() => onCheckboxChange(task.id, idList)} />
+    return <li key={task.id} className={`${task.isDone ? 'is-done' : ''} p-inputgroup edit-group`}>
+      <span className="p-inputgroup-addon">
+        <Checkbox checked={task.isDone} onChange={() => onCheckboxChange(task.id, idList)} />
+      </span>
       <TitleEdit title={task.title} editTitle={handleChangeTask} />
-      <button onClick={() => { removeTask(task.id, idList) }}>x</button>
+      <Button icon="pi pi-times" className="p-button-danger" onClick={() => { removeTask(task.id, idList) }} />
     </li>
   })
 
@@ -45,33 +50,25 @@ export const TodoList: React.FC<PropsType> = ({
     changeTitle(text, idList)
   }
 
+  const options = ['all', 'active', 'completed'];
+  const [value, setValue] = useState(options[0]);
+
+  const handleChangeFilter = (e: SelectButtonChangeEvent) => {
+    setValue(e.value)
+    changeFilter(e.value, idList)
+  }
+
   return (
     <div className="todo">
-      <Card className='todo__list'>
-        <div style={{ display: 'flex', alignItems: "center" }}>
-          <TitleEdit title={title} editTitle={handleChangeTitle} />
-          <button onClick={() => removeList(idList)} >x</button>
-        </div>
+      <Card className='todo__list' >
+        <TitleEdit title={title} editTitle={handleChangeTitle} />
+        <Button onClick={() => removeList(idList)} icon="pi pi-times" className="p-button-danger" />
         <AddItemForm addItem={handleAddTask} />
         <ul>
           {tasksElements}
         </ul>
-        <div>
-          <button onClick={() => changeFilter('all', idList)}
-            className={filter === 'all' ? 'active-filter' : ''}
-          >
-            All
-          </button>
-          <button onClick={() => changeFilter('active', idList)}
-            className={filter === 'active' ? 'active-filter' : ''}
-          >
-            Active
-          </button>
-          <button onClick={() => changeFilter('completed', idList)}
-            className={filter === 'completed' ? 'active-filter' : ''}
-          >
-            Completed
-          </button>
+        <div className="card flex justify-content-center">
+          <SelectButton value={value} onChange={handleChangeFilter} options={options} />
         </div>
       </Card >
     </div >

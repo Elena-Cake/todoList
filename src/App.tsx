@@ -7,6 +7,7 @@ import { AddItemForm } from './components/AddItemForm/AddItemForm';
 
 import "primereact/resources/themes/lara-light-indigo/theme.css";
 import "primereact/resources/primereact.min.css";
+import 'primeicons/primeicons.css';
 
 const initTasks: taskType[] = [
   { id: v1(), isDone: true, title: 'react' },

@@ -12,6 +12,7 @@
     "@types/react": "^18.2.16",
     "@types/react-dom": "^18.2.7",
     "@types/uuid": "^9.0.2",
+    "primeicons": "^6.0.1",
     "primereact": "^9.6.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
