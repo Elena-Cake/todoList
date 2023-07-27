@@ -56,6 +56,21 @@ function App() {
     }
   }
 
+  const changeTask = (text: string, idList: string, idTask: string) => {
+    const newTasks = tasks[idList].map(task => {
+      if (task.id === idTask) { return { ...task, title: text } }
+      else { return task }
+    })
+    setTasks({ ...tasks, [idList]: newTasks })
+  }
+
+  const changeTitle = (title: string, idList: string) => {
+    setTodoLists(todoLists.map(list => {
+      if (list.id === idList) { return { ...list, title: title } }
+      else { return list }
+    }))
+  }
+
   const removeList = (idList: string) => {
     setTodoLists(todoLists.filter(list => list.id !== idList))
     delete tasks[idList]
@@ -88,6 +103,8 @@ function App() {
         onCheckboxChange={onCheckboxChange}
         filter={list.filter}
         removeList={removeList}
+        changeTask={changeTask}
+        changeTitle={changeTitle}
       />
     )
   })
