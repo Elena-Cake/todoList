@@ -61,8 +61,8 @@ export const TodoList: React.FC<PropsType> = ({
   return (
     <div className="todo">
       <Card className='todo__list' >
-        <TitleEdit title={title} editTitle={handleChangeTitle} />
-        <Button onClick={() => removeList(idList)} icon="pi pi-times" className="p-button-danger" />
+        <h2> <TitleEdit title={title} editTitle={handleChangeTitle} /></h2>
+        <Button onClick={() => removeList(idList)} icon="pi pi-times" className="p-button-danger btn-close" />
         <AddItemForm addItem={handleAddTask} />
         <ul>
           {tasksElements}

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-
+import './AddItemForm.css'
 import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
 
@@ -32,13 +32,11 @@ export const AddItemForm: React.FC<PropsType> = ({
 
   return (
 
-    <form onSubmit={handleAddTask} className="p-inputgroup">
-
+    <form onSubmit={handleAddTask} className="p-inputgroup form">
       <InputText value={inputValue}
         onChange={onInputValueChange}
         className={`${error ? 'error' : ''}`}
       />
-
       <Button icon="pi pi-check" className="p-button-success" />
       <span className={`error-message`}>{error}</span>
     </form>
