@@ -9,23 +9,20 @@ import { Button } from 'primereact/button';
 import { SelectButton, SelectButtonChangeEvent } from 'primereact/selectbutton';
 import { Task } from './Task/Task';
 import { useAppDispatch } from '../../store/store';
-import { addTask, removeList } from '../../store/todoSlice';
+import { addTask, changeListTitle, removeList } from '../../store/todoSlice';
 
 type PropsType = {
   idList: string
   title: string,
   tasks: taskType[],
   changeFilter: (filter: FilterValuesType, idList: string) => void,
-  changeTask: (title: string, idList: string, idTask: string) => void,
   onCheckboxChange: (idTask: string, idList: string) => void,
-  filter: FilterValuesType,
-  changeTitle: (title: string, idList: string) => void
+  filter: FilterValuesType
 }
 
 export const TodoList: React.FC<PropsType> = ({
   idList, title, tasks, filter, changeFilter,
-  onCheckboxChange, changeTask,
-  changeTitle
+  onCheckboxChange
 }) => {
 
   const dispatch = useAppDispatch()
@@ -33,18 +30,16 @@ export const TodoList: React.FC<PropsType> = ({
     return <Task
       idList={idList} task={task}
       onCheckboxChange={onCheckboxChange}
-      changeTask={changeTask}
     />
   })
 
 
   const handleAddTask = (inputValue: string) => {
-    // addTask(inputValue, idList)
     dispatch(addTask({ task: inputValue, todoListsId: idList }))
   }
 
   const handleChangeTitle = (text: string) => {
-    changeTitle(text, idList)
+    dispatch(changeListTitle({ title: text, idList }))
   }
 
   const options = ['all', 'active', 'completed'];

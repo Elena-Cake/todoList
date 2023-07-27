@@ -36,6 +36,7 @@ const todoSlice = createSlice({
     name: "todo",
     initialState,
     reducers: {
+        // lists
         addTodoList(state, action: PayloadAction<{ title: string }>) {
             const newTodoList = { id: v1(), title: action.payload.title, filter: 'all' as FilterValuesType };
             state.todoLists.push(newTodoList)
@@ -45,6 +46,13 @@ const todoSlice = createSlice({
             state.todoLists = state.todoLists.filter(list => list.id !== action.payload.idList)
             delete state.tasks[action.payload.idList];
         },
+        changeListTitle(state, action: PayloadAction<{ title: string, idList: string }>) {
+            state.todoLists = state.todoLists.map(list => {
+                if (list.id === action.payload.idList) { return { ...list, title: action.payload.title }; }
+                return list
+            })
+        },
+        // tasks
         addTask(state, action: PayloadAction<{ task: string, todoListsId: string }>) {
             state.tasks[action.payload.todoListsId] = [
                 {
@@ -56,6 +64,12 @@ const todoSlice = createSlice({
         },
         removeTask(state, action: PayloadAction<{ idTask: string, todoListsId: string }>) {
             state.tasks[action.payload.todoListsId] = state.tasks[action.payload.todoListsId].filter(task => task.id !== action.payload.idTask)
+        },
+        changeTaskText(state, action: PayloadAction<{ text: string, idList: string, idTask: string }>) {
+            state.tasks[action.payload.idList] = state.tasks[action.payload.idList].map(task => {
+                if (task.id === action.payload.idTask) { return { ...task, title: action.payload.text }; }
+                return task
+            })
         }
 
     },
@@ -70,6 +84,9 @@ const todoSlice = createSlice({
         // })
     }
 })
-export const { addTodoList, removeList, addTask, removeTask } = todoSlice.actions
+export const {
+    addTodoList, removeList, changeListTitle,
+    addTask, removeTask, changeTaskText
+} = todoSlice.actions
 export default todoSlice.reducer
 

@@ -4,20 +4,19 @@ import { TitleEdit } from '../../TitleEdit/TitleEdit';
 import { Checkbox } from 'primereact/checkbox';
 import { Button } from 'primereact/button';
 import { useAppDispatch } from '../../../store/store';
-import { removeTask } from '../../../store/todoSlice';
+import { changeTaskText, removeTask } from '../../../store/todoSlice';
 
 type TaskPropsType = {
     task: taskType;
     idList: string;
     onCheckboxChange: (idTask: string, idList: string) => void;
-    changeTask: (title: string, idList: string, idTask: string) => void;
 };
 
-export const Task: React.FC<TaskPropsType> = ({ task, idList, onCheckboxChange, changeTask, }) => {
+export const Task: React.FC<TaskPropsType> = ({ task, idList, onCheckboxChange }) => {
 
     const dispatch = useAppDispatch()
     const handleChangeTask = (text: string) => {
-        changeTask(text, idList, task.id);
+        dispatch(changeTaskText({ text, idList, idTask: task.id }))
     };
 
 

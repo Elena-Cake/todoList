@@ -31,20 +31,6 @@ export const TodoLists = () => {
         }
     };
 
-    const changeTask = (text: string, idList: string, idTask: string) => {
-        const newTasks = tasks[idList].map(task => {
-            if (task.id === idTask) { return { ...task, title: text }; }
-            else { return task; }
-        });
-        // setTasks({ ...tasks, [idList]: newTasks });
-    };
-
-    const changeTitle = (title: string, idList: string) => {
-        // setTodoLists(todoLists.map(list => {
-        //     if (list.id === idList) { return { ...list, title: title }; }
-        //     else { return list; }
-        // }));
-    };
 
     const handleAddTodoList = (title: string) => {
         dispatch(addTodoList({ title: title }))
@@ -66,9 +52,7 @@ export const TodoLists = () => {
                 tasks={tasksForTodoList}
                 changeFilter={changeFilter}
                 onCheckboxChange={onCheckboxChange}
-                filter={list.filter}
-                changeTask={changeTask}
-                changeTitle={changeTitle} />
+                filter={list.filter} />
         );
     });
 
