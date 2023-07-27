@@ -3,32 +3,27 @@ import { v1 } from 'uuid'
 import { taskType, todoListType } from '../types/types'
 
 
-// type reportTotalType = {
-//     firstSeanceTime: string | null,
-//     lastSeanceTime: string | null,
-//     seanceCount: number | null,
-//     workTimeInSec: string | null
-// }
-// type Report = {
-//     date_start: string | null,
-//     date_end: string | null,
-//     dates: string | [string, string] | null,
-//     isLoading: boolean,
-//     error: string | null,
-//     info_message: string | null
-// }
+const idLists = [v1(), v1()]
 
+const initialState = {
+    initTodoLists: [
+        { id: idLists[0], title: 'What to learn', filter: 'all' },
+        { id: idLists[1], title: 'What to do', filter: 'all' },
+    ] as todoListType[],
+    tasks: {
+        [idLists[0]]: [
+            { id: v1(), isDone: true, title: 'react' },
+            { id: v1(), isDone: false, title: 'ts' },
+            { id: v1(), isDone: true, title: 'css' },
+            { id: v1(), isDone: true, title: 'redux' },
+        ] as taskType[],
+        [idLists[1]]: [
+            { id: v1(), isDone: false, title: 'learn' },
+            { id: v1(), isDone: true, title: 'codding' },
+        ] as taskType[]
+    }
+}
 
-const initialState = {}
-// const initialState: Report = {
-//     date_start: null,
-//     date_end: null,
-//     dates: null,
-//     isLoading: false,
-//     error: null,
-//     info_message: null,
-
-// }
 
 // export const getReport = createAsyncThunk(
 //     'report/setReport',
@@ -38,31 +33,20 @@ const initialState = {}
 //     }
 // )
 
-const initTasks: taskType[] = [
-    { id: v1(), isDone: true, title: 'react' },
-    { id: v1(), isDone: false, title: 'ts' },
-    { id: v1(), isDone: true, title: 'css' },
-    { id: v1(), isDone: true, title: 'redux' },
-]
-const initTasks2: taskType[] = [
-    { id: v1(), isDone: false, title: 'learn' },
-    { id: v1(), isDone: true, title: 'codding' },
-]
-
-const idList1 = v1()
-const idList2 = v1()
-const initTodoLists: todoListType[] = [
-    { id: idList1, title: 'What to learn', filter: 'all' },
-    { id: idList2, title: 'What to do', filter: 'all' },
-]
-
 const todoSlice = createSlice({
-    name: "report",
+    name: "todo",
     initialState,
     reducers: {
-        // setDates(state, action: PayloadAction<{ date_start: string, date_end: string }>) {
+        addTask(state, action: PayloadAction<{ task: string, todoListsId: string }>) {
+            state.tasks[action.payload.todoListsId] = [
+                {
+                    id: v1(), title: action.payload.task,
+                    isDone: false
+                },
+                ...state.tasks[action.payload.todoListsId]
+            ]
+        },
 
-        // }
     },
     extraReducers: (builder) => {
         // builder
@@ -75,6 +59,6 @@ const todoSlice = createSlice({
         // })
     }
 })
-// export const { setDates } = todoSlice.actions
+export const { addTask } = todoSlice.actions
 export default todoSlice.reducer
 

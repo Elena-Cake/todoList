@@ -4,6 +4,7 @@ import { TodoList } from '../TodoList/TodoList';
 import { FilterValuesType, taskType, todoListType } from '../../types/types';
 import { v1 } from 'uuid';
 import { AddItemForm } from '../AddItemForm/AddItemForm';
+import { useAppSelector } from '../../store/store';
 
 const initTasks: taskType[] = [
     { id: v1(), isDone: true, title: 'react' },
@@ -25,19 +26,16 @@ const initTodoLists: todoListType[] = [
 
 export const TodoLists = () => {
 
-    const [todoLists, setTodoLists] = useState<todoListType[]>(initTodoLists);
-    const [tasks, setTasks] = useState({
-        [idList1]: initTasks,
-        [idList2]: initTasks2
-    });
+    const todoLists = useAppSelector(state => state.todoLists.initTodoLists)
+    const tasks = useAppSelector(state => state.todoLists.tasks)
 
     const addTask = (task: string, todoListsId: string) => {
         tasks[todoListsId] = [{ id: v1(), title: task, isDone: false }, ...tasks[todoListsId]];
-        setTasks({ ...tasks });
+        // setTasks({ ...tasks });
     };
     const removeTask = (idTask: string, todoListsId: string) => {
         const filteredTasks = tasks[todoListsId].filter(task => task.id !== idTask);
-        setTasks({ ...tasks, [todoListsId]: filteredTasks });
+        // setTasks({ ...tasks, [todoListsId]: filteredTasks });
     };
 
     const onCheckboxChange = (idTask: string, todoListsId: string) => {
@@ -45,14 +43,14 @@ export const TodoLists = () => {
             if (task.id === idTask) return { ...task, isDone: !task.isDone };
             return task;
         });
-        setTasks({ ...tasks, [todoListsId]: changedTasksList });
+        // setTasks({ ...tasks, [todoListsId]: changedTasksList });
     };
 
     const changeFilter = (filter: FilterValuesType, todoListsId: string) => {
         let tl = todoLists.find(tl => tl.id === todoListsId);
         if (tl) {
             tl.filter = filter;
-            setTodoLists([...todoLists]);
+            // setTodoLists([...todoLists]);
         }
     };
 
@@ -61,30 +59,31 @@ export const TodoLists = () => {
             if (task.id === idTask) { return { ...task, title: text }; }
             else { return task; }
         });
-        setTasks({ ...tasks, [idList]: newTasks });
+        // setTasks({ ...tasks, [idList]: newTasks });
     };
 
     const changeTitle = (title: string, idList: string) => {
-        setTodoLists(todoLists.map(list => {
-            if (list.id === idList) { return { ...list, title: title }; }
-            else { return list; }
-        }));
+        // setTodoLists(todoLists.map(list => {
+        //     if (list.id === idList) { return { ...list, title: title }; }
+        //     else { return list; }
+        // }));
     };
 
     const removeList = (idList: string) => {
-        setTodoLists(todoLists.filter(list => list.id !== idList));
+        // setTodoLists(todoLists.filter(list => list.id !== idList));
         delete tasks[idList];
-        setTasks({ ...tasks });
+        // setTasks({ ...tasks });
     };
 
     const addTodoList = (title: string) => {
         const newTodoList = { id: v1(), title: title, filter: 'all' as FilterValuesType };
-        setTodoLists([newTodoList, ...todoLists]);
-        setTasks({ [newTodoList.id]: [], ...tasks });
+        // setTodoLists([newTodoList, ...todoLists]);
+        // setTasks({ [newTodoList.id]: [], ...tasks });
     };
 
     const todoListsElements = todoLists.map((list) => {
         let tasksForTodoList = tasks[list.id];
+
         if (list.filter === 'completed') {
             tasksForTodoList = tasks[list.id].filter(t => t.isDone);
         }
@@ -98,7 +97,6 @@ export const TodoLists = () => {
                 tasks={tasksForTodoList}
                 removeTask={removeTask}
                 changeFilter={changeFilter}
-                addTask={addTask}
                 onCheckboxChange={onCheckboxChange}
                 filter={list.filter}
                 removeList={removeList}

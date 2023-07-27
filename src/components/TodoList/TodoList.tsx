@@ -8,6 +8,8 @@ import { Checkbox } from 'primereact/checkbox';
 import { Button } from 'primereact/button';
 import { SelectButton, SelectButtonChangeEvent } from 'primereact/selectbutton';
 import { Task } from './Task/Task';
+import { useAppDispatch } from '../../store/store';
+import { addTask } from '../../store/todoSlice';
 
 type PropsType = {
   idList: string
@@ -15,7 +17,6 @@ type PropsType = {
   tasks: taskType[],
   removeTask: (id: string, idList: string) => void,
   changeFilter: (filter: FilterValuesType, idList: string) => void,
-  addTask: (title: string, idList: string) => void,
   changeTask: (title: string, idList: string, idTask: string) => void,
   onCheckboxChange: (idTask: string, idList: string) => void,
   filter: FilterValuesType,
@@ -24,11 +25,12 @@ type PropsType = {
 }
 
 export const TodoList: React.FC<PropsType> = ({
-  idList, title, tasks, filter, addTask, changeFilter,
+  idList, title, tasks, filter, changeFilter,
   removeTask, onCheckboxChange, removeList, changeTask,
   changeTitle
 }) => {
 
+  const dispatch = useAppDispatch()
   const tasksElements = tasks.map(task => {
     return <Task
       idList={idList} task={task}
@@ -40,7 +42,8 @@ export const TodoList: React.FC<PropsType> = ({
 
 
   const handleAddTask = (inputValue: string) => {
-    addTask(inputValue, idList)
+    // addTask(inputValue, idList)
+    dispatch(addTask({ task: inputValue, todoListsId: idList }))
   }
 
   const handleChangeTitle = (text: string) => {
