@@ -4,7 +4,6 @@ import { FilterValuesType, taskType } from '../../types/types';
 import { AddItemForm } from '../AddItemForm/AddItemForm';
 import { TitleEdit } from '../TitleEdit/TitleEdit';
 import { Card } from 'primereact/card';
-import { Checkbox } from 'primereact/checkbox';
 import { Button } from 'primereact/button';
 import { SelectButton, SelectButtonChangeEvent } from 'primereact/selectbutton';
 import { Task } from './Task/Task';

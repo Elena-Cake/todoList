@@ -1,8 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 import './TodoLists.css'
 import { TodoList } from '../TodoList/TodoList';
-import { FilterValuesType, taskType, todoListType } from '../../types/types';
-import { v1 } from 'uuid';
 import { AddItemForm } from '../AddItemForm/AddItemForm';
 import { useAppDispatch, useAppSelector } from '../../store/store';
 import { addTodoList } from '../../store/todoSlice';
