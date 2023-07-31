@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { DragEvent, useState } from 'react';
 import './TodoList.css';
 import { FilterValuesType, taskType } from '../../types/types';
 import { AddItemForm } from '../AddItemForm/AddItemForm';
@@ -23,7 +23,7 @@ export const TodoList: React.FC<PropsType> = ({
 
   const dispatch = useAppDispatch()
   const tasksElements = tasks.map(task => {
-    return <Task
+    return <Task key={task.id}
       idList={idList} task={task}
     />
   })
@@ -45,8 +45,37 @@ export const TodoList: React.FC<PropsType> = ({
     dispatch(changeFilter({ filter: e.value, todoListsId: idList }))
   }
 
+  const dragStartHandler = (e: DragEvent<HTMLDivElement>, idList: string) => {
+    // что взял
+    // console.log('Start', e.target)
+  }
+  const dragLeaveHandler = (e: DragEvent<HTMLDivElement>) => {
+    e.preventDefault()
+    // над чем был, но улетел
+    console.log('leave', e.target)
+  }
+  const dragOverHandler = (e: DragEvent<HTMLDivElement>, idList: string) => {
+    e.preventDefault()
+    // // над чем летит
+    // console.log('Over', e.target)
+  }
+  const dragEndHandler = (e: DragEvent<HTMLDivElement>) => {
+    e.preventDefault()
+    // что бросил
+    console.log('End', e.target)
+  }
+
   return (
-    <Card className='todo__list' >
+
+    <Card
+      className='todo__list'
+      draggable={true}
+    // onDragStart={e => dragStartHandler(e, idList)}
+    // onDragLeave={e => dragLeaveHandler(e)}
+    // onDragOver={e => dragOverHandler(e, idList)}
+    // onDragEnd={e => dragEndHandler(e)}
+
+    >
       <h2> <TitleEdit title={title} editTitle={handleChangeTitle} /></h2>
       <Button onClick={() => dispatch(removeList({ idList }))} icon="pi pi-times" className="p-button-danger btn-close" />
       <AddItemForm addItem={handleAddTask} />

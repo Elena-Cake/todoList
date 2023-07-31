@@ -39,7 +39,7 @@ const todoSlice = createSlice({
         // lists
         addTodoList(state, action: PayloadAction<{ title: string }>) {
             const newTodoList = { id: v1(), title: action.payload.title, filter: 'all' as FilterValuesType };
-            state.todoLists.push(newTodoList)
+            state.todoLists.unshift(newTodoList)
             state.tasks[newTodoList.id] = []
         },
         removeList(state, action: PayloadAction<{ idList: string }>) {
@@ -58,15 +58,22 @@ const todoSlice = createSlice({
                 todoList.filter = action.payload.filter;
             }
         },
+        changeListsLocation(state, action: PayloadAction<{ idListMoved: string, idListOver: string }>) {
+            const listMoved = state.todoLists.find(list => list.id !== action.payload.idListMoved)
+            const newLists = state.todoLists.filter(list => list.id !== action.payload.idListMoved)
+            let idElement = 0
+            newLists.forEach((list, i) => {
+                if (list.id === action.payload.idListOver) idElement = i
+            })
+            if (listMoved) newLists.splice(idElement, 0, listMoved)
+            state.todoLists = newLists
+        },
         // tasks
         addTask(state, action: PayloadAction<{ task: string, todoListsId: string }>) {
-            state.tasks[action.payload.todoListsId] = [
-                {
-                    id: v1(), title: action.payload.task,
-                    isDone: false
-                },
-                ...state.tasks[action.payload.todoListsId]
-            ]
+            state.tasks[action.payload.todoListsId].unshift({
+                id: v1(), title: action.payload.task,
+                isDone: false
+            })
         },
         removeTask(state, action: PayloadAction<{ idTask: string, todoListsId: string }>) {
             state.tasks[action.payload.todoListsId] = state.tasks[action.payload.todoListsId].filter(task => task.id !== action.payload.idTask)
@@ -98,7 +105,7 @@ const todoSlice = createSlice({
     }
 })
 export const {
-    addTodoList, removeList, changeListTitle, changeFilter,
+    addTodoList, removeList, changeListTitle, changeFilter, changeListsLocation,
     addTask, removeTask, changeTaskText, changeCheckboxTask
 } = todoSlice.actions
 export default todoSlice.reducer
