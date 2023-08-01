@@ -1,6 +1,7 @@
 import { PayloadAction, createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import { v1 } from 'uuid'
 import { FilterValuesType, taskType, todoListType } from '../types/types'
+import { changeElemLocation } from '../utils/function-helpers'
 
 
 const idLists = [v1(), v1()]
@@ -59,13 +60,13 @@ const todoSlice = createSlice({
             }
         },
         changeListsLocation(state, action: PayloadAction<{ idListMoved: string, idListOver: string }>) {
+            // changeElemLocation(state.todoLists,action.payload.idListMoved,action.payload.idListOver)
             const listMoved = state.todoLists.find(list => list.id === action.payload.idListMoved)
             const newLists = state.todoLists.filter(list => list.id !== action.payload.idListMoved)
             let idElement = 0
             newLists.forEach((list, i) => {
                 if (list.id === action.payload.idListOver) idElement = i
             })
-            debugger
             state.todoLists[idElement + 1].isGhost = false
             if (listMoved) newLists.splice(idElement, 0, listMoved)
             state.todoLists = newLists
@@ -104,7 +105,17 @@ const todoSlice = createSlice({
                 return task;
             });
             // setTasks({ ...tasks, [todoListsId]: changedTasksList });
-        }
+        },
+        changeTaskLocation(state, action: PayloadAction<{ idList: string, idTaskMoved: string, idTaskOver: string }>) {
+            const taskMoved = state.tasks[action.payload.idList].find(list => list.id === action.payload.idTaskMoved)
+            const newLists = state.tasks[action.payload.idList].filter(list => list.id !== action.payload.idTaskMoved)
+            let idElement = 0
+            newLists.forEach((list, i) => {
+                if (list.id === action.payload.idTaskOver) idElement = i
+            })
+            if (taskMoved) newLists.splice(idElement, 0, taskMoved)
+            state.tasks[action.payload.idList] = newLists
+        },
 
     },
     extraReducers: (builder) => {
@@ -123,7 +134,8 @@ export const {
     changeFilter, changeListsLocation, setListGhost,
     setListVisible,
 
-    addTask, removeTask, changeTaskText, changeCheckboxTask
+    addTask, removeTask, changeTaskText, changeCheckboxTask,
+    changeTaskLocation
 } = todoSlice.actions
 export default todoSlice.reducer
 

@@ -1,4 +1,4 @@
-import React, { DragEvent, useEffect, useState } from 'react';
+import React, { DragEvent, useState } from 'react';
 import './TodoList.css';
 import { FilterValuesType, taskType, todoListType } from '../../types/types';
 import { AddItemForm } from '../AddItemForm/AddItemForm';
@@ -8,7 +8,7 @@ import { Button } from 'primereact/button';
 import { SelectButton, SelectButtonChangeEvent } from 'primereact/selectbutton';
 import { Task } from './Task/Task';
 import { useAppDispatch } from '../../store/store';
-import { addTask, changeFilter, changeListTitle, removeList, setListGhost, setListVisible } from '../../store/todoSlice';
+import { addTask, changeFilter, changeListTitle, changeTaskLocation, removeList, setListGhost, setListVisible } from '../../store/todoSlice';
 
 type PropsType = {
   idList: string
@@ -16,7 +16,7 @@ type PropsType = {
   tasks: taskType[],
   filter: FilterValuesType
   handleSetDragOverList: (idListOver: string) => void
-  moveList: (idListOver: string) => void
+  moveList: (idList: string) => void
 }
 
 export const TodoList: React.FC<PropsType> = ({
@@ -25,11 +25,17 @@ export const TodoList: React.FC<PropsType> = ({
 
   const dispatch = useAppDispatch()
 
-  const tasksElements = tasks.map(task => {
-    return <Task key={task.id}
-      idList={idList} task={task}
-    />
-  })
+  const [idTaskDragOver, setIdTaskDragOver] = useState(null as string | null)
+  const handleSetDragOverTask = (idTaskOver: string) => {
+    if (idTaskOver !== idTaskDragOver) {
+      setIdTaskDragOver(idTaskOver)
+    }
+  }
+  const moveTask = (idTask: string) => {
+    if (idTask !== idTaskDragOver && idTaskDragOver) {
+      dispatch(changeTaskLocation({ idList: idList, idTaskMoved: idTask, idTaskOver: idTaskDragOver }))
+    }
+  }
 
   const handleAddTask = (inputValue: string) => {
     dispatch(addTask({ task: inputValue, todoListsId: idList }))
@@ -68,7 +74,13 @@ export const TodoList: React.FC<PropsType> = ({
     dispatch(setListVisible({ idList }))
     // что бросил
   }
-
+  const tasksElements = tasks.map(task => {
+    return <Task key={task.id}
+      idList={idList} task={task}
+      handleSetDragOverTask={handleSetDragOverTask}
+      moveTask={moveTask}
+    />
+  })
 
   return (
 
