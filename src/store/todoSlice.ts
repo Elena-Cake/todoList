@@ -7,8 +7,8 @@ const idLists = [v1(), v1()]
 
 const initialState = {
     todoLists: [
-        { id: idLists[0], title: 'What to learn', filter: 'all' },
-        { id: idLists[1], title: 'What to do', filter: 'all' },
+        { id: idLists[0], title: 'What to learn', filter: 'all', isGhost: false },
+        { id: idLists[1], title: 'What to do', filter: 'all', isGhost: false },
     ] as todoListType[],
     tasks: {
         [idLists[0]]: [
@@ -38,7 +38,7 @@ const todoSlice = createSlice({
     reducers: {
         // lists
         addTodoList(state, action: PayloadAction<{ title: string }>) {
-            const newTodoList = { id: v1(), title: action.payload.title, filter: 'all' as FilterValuesType };
+            const newTodoList = { id: v1(), title: action.payload.title, filter: 'all' as FilterValuesType, isGhost: false };
             state.todoLists.unshift(newTodoList)
             state.tasks[newTodoList.id] = []
         },
@@ -59,14 +59,28 @@ const todoSlice = createSlice({
             }
         },
         changeListsLocation(state, action: PayloadAction<{ idListMoved: string, idListOver: string }>) {
-            const listMoved = state.todoLists.find(list => list.id !== action.payload.idListMoved)
+            const listMoved = state.todoLists.find(list => list.id === action.payload.idListMoved)
             const newLists = state.todoLists.filter(list => list.id !== action.payload.idListMoved)
             let idElement = 0
             newLists.forEach((list, i) => {
                 if (list.id === action.payload.idListOver) idElement = i
             })
+            debugger
+            state.todoLists[idElement + 1].isGhost = false
             if (listMoved) newLists.splice(idElement, 0, listMoved)
             state.todoLists = newLists
+        },
+        setListGhost(state, action: PayloadAction<{ idList: string }>) {
+            state.todoLists = state.todoLists.map(list => {
+                if (list.id === action.payload.idList) return { ...list, isGhost: true }
+                return list
+            })
+        },
+        setListVisible(state, action: PayloadAction<{ idList: string }>) {
+            state.todoLists = state.todoLists.map(list => {
+                if (list.id === action.payload.idList) return { ...list, isGhost: false }
+                return list
+            })
         },
         // tasks
         addTask(state, action: PayloadAction<{ task: string, todoListsId: string }>) {
@@ -105,7 +119,10 @@ const todoSlice = createSlice({
     }
 })
 export const {
-    addTodoList, removeList, changeListTitle, changeFilter, changeListsLocation,
+    addTodoList, removeList, changeListTitle,
+    changeFilter, changeListsLocation, setListGhost,
+    setListVisible,
+
     addTask, removeTask, changeTaskText, changeCheckboxTask
 } = todoSlice.actions
 export default todoSlice.reducer

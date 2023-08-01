@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import './TodoLists.css'
 import { TodoList } from '../TodoList/TodoList';
 import { AddItemForm } from '../AddItemForm/AddItemForm';
 import { useAppDispatch, useAppSelector } from '../../store/store';
-import { addTodoList } from '../../store/todoSlice';
+import { addTodoList, changeListsLocation } from '../../store/todoSlice';
 
 
 export const TodoLists = () => {
@@ -17,6 +17,21 @@ export const TodoLists = () => {
         dispatch(addTodoList({ title: title }))
     };
 
+
+    const [idListDragOver, setIdListDragOver] = useState(null as string | null)
+    const handleSetDragOverList = (idListOver: string) => {
+        if (idListDragOver !== idListOver) {
+            setIdListDragOver(idListOver)
+        }
+    }
+
+    const moveList = (idListMoved: string) => {
+        if (idListMoved !== idListDragOver && idListDragOver) {
+            dispatch(changeListsLocation({ idListMoved: idListMoved, idListOver: idListDragOver }))
+        }
+    }
+
+
     const todoListsElements = todoLists.map((list) => {
         let tasksForTodoList = tasks[list.id];
 
@@ -29,9 +44,12 @@ export const TodoLists = () => {
         return (
             <TodoList key={list.id}
                 idList={list.id}
-                title={list.title}
+                list={list}
                 tasks={tasksForTodoList}
-                filter={list.filter} />
+                filter={list.filter}
+                handleSetDragOverList={handleSetDragOverList}
+                moveList={moveList}
+            />
         );
     });
 

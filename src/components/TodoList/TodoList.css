@@ -11,3 +11,8 @@
   top: 10px;
   right: 10px;
 }
+
+.todo__list_type_ghost {
+  padding-left: 100px;
+  opacity: .5;
+}

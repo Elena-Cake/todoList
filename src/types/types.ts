@@ -2,6 +2,7 @@ export type todoListType = {
     id: string,
     title: string,
     filter: FilterValuesType
+    isGhost: boolean
 }
 
 export type taskType = {

@@ -1,6 +1,6 @@
-import React, { DragEvent, useState } from 'react';
+import React, { DragEvent, useEffect, useState } from 'react';
 import './TodoList.css';
-import { FilterValuesType, taskType } from '../../types/types';
+import { FilterValuesType, taskType, todoListType } from '../../types/types';
 import { AddItemForm } from '../AddItemForm/AddItemForm';
 import { TitleEdit } from '../TitleEdit/TitleEdit';
 import { Card } from 'primereact/card';
@@ -8,26 +8,28 @@ import { Button } from 'primereact/button';
 import { SelectButton, SelectButtonChangeEvent } from 'primereact/selectbutton';
 import { Task } from './Task/Task';
 import { useAppDispatch } from '../../store/store';
-import { addTask, changeFilter, changeListTitle, removeList } from '../../store/todoSlice';
+import { addTask, changeFilter, changeListTitle, removeList, setListGhost, setListVisible } from '../../store/todoSlice';
 
 type PropsType = {
   idList: string
-  title: string,
+  list: todoListType,
   tasks: taskType[],
   filter: FilterValuesType
+  handleSetDragOverList: (idListOver: string) => void
+  moveList: (idListOver: string) => void
 }
 
 export const TodoList: React.FC<PropsType> = ({
-  idList, title, tasks, filter
+  idList, list, tasks, filter, handleSetDragOverList, moveList
 }) => {
 
   const dispatch = useAppDispatch()
+
   const tasksElements = tasks.map(task => {
     return <Task key={task.id}
       idList={idList} task={task}
     />
   })
-
 
   const handleAddTask = (inputValue: string) => {
     dispatch(addTask({ task: inputValue, todoListsId: idList }))
@@ -47,36 +49,39 @@ export const TodoList: React.FC<PropsType> = ({
 
   const dragStartHandler = (e: DragEvent<HTMLDivElement>, idList: string) => {
     // что взял
-    // console.log('Start', e.target)
+    // console.log('Start', idList)
   }
   const dragLeaveHandler = (e: DragEvent<HTMLDivElement>) => {
     e.preventDefault()
+    dispatch(setListVisible({ idList }))
     // над чем был, но улетел
-    console.log('leave', e.target)
   }
-  const dragOverHandler = (e: DragEvent<HTMLDivElement>, idList: string) => {
+  const dragOverHandler = (e: DragEvent<HTMLDivElement>, idListOver: string) => {
     e.preventDefault()
-    // // над чем летит
-    // console.log('Over', e.target)
+    handleSetDragOverList(idListOver)
+    dispatch(setListGhost({ idList: idListOver }))
+    // над чем летит
   }
-  const dragEndHandler = (e: DragEvent<HTMLDivElement>) => {
+  const dragEndHandler = (e: DragEvent<HTMLDivElement>, idList: string) => {
     e.preventDefault()
+    moveList(idList)
+    dispatch(setListVisible({ idList }))
     // что бросил
-    console.log('End', e.target)
   }
+
 
   return (
 
     <Card
-      className='todo__list'
+      className={`todo__list ${list.isGhost ? 'todo__list_type_ghost' : ''}`}
       draggable={true}
-    // onDragStart={e => dragStartHandler(e, idList)}
-    // onDragLeave={e => dragLeaveHandler(e)}
-    // onDragOver={e => dragOverHandler(e, idList)}
-    // onDragEnd={e => dragEndHandler(e)}
+      onDragStart={e => dragStartHandler(e, idList)}
+      onDragLeave={e => dragLeaveHandler(e)}
+      onDragOver={e => dragOverHandler(e, idList)}
+      onDragEnd={e => dragEndHandler(e, idList)}
 
     >
-      <h2> <TitleEdit title={title} editTitle={handleChangeTitle} /></h2>
+      <h2> <TitleEdit title={list.title} editTitle={handleChangeTitle} /></h2>
       <Button onClick={() => dispatch(removeList({ idList }))} icon="pi pi-times" className="p-button-danger btn-close" />
       <AddItemForm addItem={handleAddTask} />
       <ul>
