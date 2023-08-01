@@ -4,6 +4,7 @@
   position: relative;
   margin-bottom: 20px;
   cursor: grab;
+  transition: all 1s ease;
 }
 
 .btn-close {
@@ -13,6 +14,6 @@
 }
 
 .todo__list_type_ghost {
-  padding-left: 100px;
-  opacity: .5;
+  margin-left: 100px;
+  opacity: .3;
 }
