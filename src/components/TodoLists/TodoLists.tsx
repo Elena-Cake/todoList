@@ -17,7 +17,6 @@ export const TodoLists = () => {
         dispatch(addTodoList({ title: title }))
     };
 
-
     const [idListDragOver, setIdListDragOver] = useState(null as string | null)
     const handleSetDragOverList = (idListOver: string) => {
         if (idListDragOver !== idListOver) {
@@ -30,7 +29,6 @@ export const TodoLists = () => {
             dispatch(changeListsLocation({ idListMoved: idListMoved, idListOver: idListDragOver }))
         }
     }
-
 
     const todoListsElements = todoLists.map((list) => {
         let tasksForTodoList = tasks[list.id];
@@ -56,6 +54,7 @@ export const TodoLists = () => {
     return (
         <>
             <div className='app__addlist'>
+                <h1>Todo-List</h1>
                 <AddItemForm addItem={handleAddTodoList} />
             </div>
             <div className='app__lists'>
