@@ -17,3 +17,14 @@
   /* margin-left: 100px; */
   opacity: .3;
 }
+
+.card__sort {
+  width: 100%;
+  display: flex;
+  justify-content: start;
+  margin: 5px;
+}
+
+.list__tasks {
+  margin: 5px 0 15px;
+}

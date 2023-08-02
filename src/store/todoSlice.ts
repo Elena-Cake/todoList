@@ -1,6 +1,6 @@
 import { PayloadAction, createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import { v1 } from 'uuid'
-import { FilterValuesType, taskType, todoListType } from '../types/types'
+import { FilterValuesType, SortValuesType, taskType, todoListType } from '../types/types'
 import { changeElemLocation } from '../utils/function-helpers'
 
 
@@ -8,8 +8,20 @@ const idLists = [v1(), v1()]
 
 const initialState = {
     todoLists: [
-        { id: idLists[0], title: 'What to learn', filter: 'all', isGhost: false },
-        { id: idLists[1], title: 'What to do', filter: 'all', isGhost: false },
+        {
+            id: idLists[0],
+            title: 'What to learn',
+            filter: 'all',
+            sort: 'notsorted',
+            isGhost: false
+        },
+        {
+            id: idLists[1],
+            title: 'What to do',
+            filter: 'all',
+            sort: 'notsorted',
+            isGhost: false
+        },
     ] as todoListType[],
     tasks: {
         [idLists[0]]: [
@@ -39,7 +51,13 @@ const todoSlice = createSlice({
     reducers: {
         // lists
         addTodoList(state, action: PayloadAction<{ title: string }>) {
-            const newTodoList = { id: v1(), title: action.payload.title, filter: 'all' as FilterValuesType, isGhost: false };
+            const newTodoList = {
+                id: v1(),
+                title: action.payload.title,
+                filter: 'all' as FilterValuesType,
+                sort: 'notsorted' as SortValuesType,
+                isGhost: false
+            };
             state.todoLists.unshift(newTodoList)
             state.tasks[newTodoList.id] = []
         },
@@ -60,16 +78,16 @@ const todoSlice = createSlice({
             }
         },
         changeListsLocation(state, action: PayloadAction<{ idListMoved: string, idListOver: string }>) {
-            // changeElemLocation(state.todoLists,action.payload.idListMoved,action.payload.idListOver)
+
             const listMoved = state.todoLists.find(list => list.id === action.payload.idListMoved)
             const newLists = state.todoLists.filter(list => list.id !== action.payload.idListMoved)
             let idElement = 0
             newLists.forEach((list, i) => {
                 if (list.id === action.payload.idListOver) idElement = i
             })
-            state.todoLists[idElement + 1].isGhost = false
             if (listMoved) newLists.splice(idElement, 0, listMoved)
             state.todoLists = newLists
+            setListVisible({ idList: action.payload.idListOver })
         },
         setListGhost(state, action: PayloadAction<{ idList: string }>) {
             state.todoLists = state.todoLists.map(list => {
@@ -79,8 +97,8 @@ const todoSlice = createSlice({
         },
         setListVisible(state, action: PayloadAction<{ idList: string }>) {
             state.todoLists = state.todoLists.map(list => {
-                if (list.id === action.payload.idList) return { ...list, isGhost: false }
-                return list
+                return { ...list, isGhost: false }
+
             })
         },
         // tasks
@@ -116,7 +134,22 @@ const todoSlice = createSlice({
             if (taskMoved) newLists.splice(idElement, 0, taskMoved)
             state.tasks[action.payload.idList] = newLists
         },
+        changeSortTasks(state, action: PayloadAction<{ idList: string }>) {
+            state.todoLists = state.todoLists.map(list => {
+                if (list.id === action.payload.idList) {
+                    switch (list.sort) {
+                        case 'done':
+                            state.tasks[list.id] = state.tasks[list.id].sort((a, b) => Number(a.isDone) - Number(b.isDone));
+                            return { ...list, sort: 'undone' }
 
+                        default:
+                            state.tasks[list.id] = state.tasks[list.id].sort((a, b) => Number(b.isDone) - Number(a.isDone));
+                            return { ...list, sort: 'done' }
+                    }
+                }
+                return list
+            })
+        },
     },
     extraReducers: (builder) => {
         // builder
@@ -135,7 +168,7 @@ export const {
     setListVisible,
 
     addTask, removeTask, changeTaskText, changeCheckboxTask,
-    changeTaskLocation
+    changeTaskLocation, changeSortTasks
 } = todoSlice.actions
 export default todoSlice.reducer
 

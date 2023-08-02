@@ -8,7 +8,7 @@ import { Button } from 'primereact/button';
 import { SelectButton, SelectButtonChangeEvent } from 'primereact/selectbutton';
 import { Task } from './Task/Task';
 import { useAppDispatch } from '../../store/store';
-import { addTask, changeFilter, changeListTitle, changeTaskLocation, removeList, setListGhost, setListVisible } from '../../store/todoSlice';
+import { addTask, changeFilter, changeListTitle, changeSortTasks, changeTaskLocation, removeList, setListGhost, setListVisible } from '../../store/todoSlice';
 
 type PropsType = {
   idList: string
@@ -53,13 +53,9 @@ export const TodoList: React.FC<PropsType> = ({
     dispatch(changeFilter({ filter: e.value, todoListsId: idList }))
   }
 
-  const dragStartHandler = (e: DragEvent<HTMLDivElement>, idList: string) => {
-    // что взял
-    // console.log('Start', idList)
-  }
-  const dragLeaveHandler = (e: DragEvent<HTMLDivElement>) => {
+  const dragLeaveHandler = (e: DragEvent<HTMLDivElement>, idListLeave: string) => {
     e.preventDefault()
-    dispatch(setListVisible({ idList }))
+    dispatch(setListVisible({ idList: idListLeave }))
     // над чем был, но улетел
   }
   const dragOverHandler = (e: DragEvent<HTMLDivElement>, idListOver: string) => {
@@ -87,8 +83,7 @@ export const TodoList: React.FC<PropsType> = ({
     <Card
       className={`todo__list ${list.isGhost ? 'todo__list_type_ghost' : ''}`}
       draggable={true}
-      onDragStart={e => dragStartHandler(e, idList)}
-      onDragLeave={e => dragLeaveHandler(e)}
+      onDragLeave={e => dragLeaveHandler(e, idList)}
       onDragOver={e => dragOverHandler(e, idList)}
       onDragEnd={e => dragEndHandler(e, idList)}
 
@@ -96,7 +91,13 @@ export const TodoList: React.FC<PropsType> = ({
       <h2> <TitleEdit title={list.title} editTitle={handleChangeTitle} /></h2>
       <Button onClick={() => dispatch(removeList({ idList }))} icon="pi pi-times" className="p-button-danger btn-close" />
       <AddItemForm addItem={handleAddTask} />
-      <ul>
+      <div className='card__sort'>
+        <Button icon="pi pi-sort-alt" text severity="secondary" aria-label="Bookmark"
+          style={{ 'width': '2rem', 'padding': '0', 'height': '2rem' }}
+          onClick={() => { dispatch(changeSortTasks({ idList })) }}
+        />
+      </div>
+      <ul className='list__tasks'>
         {tasksElements}
       </ul>
       <div className="card flex justify-content-center">
