@@ -26,24 +26,22 @@ type PropsType = {
 }
 
 export const TodoList: React.FC<PropsType> = ({
-  idList, list, tasks, filter, handleSetDragOverList, moveList, index
+  idList, list, tasks, filter, handleSetDragOverList, moveList, index,
 }) => {
+
+
+  const [idListTaskDrag, setIdListTaskDrag] = useState(null as string | null)
   const ref = useRef<HTMLDivElement>(null)
   const dispatch = useAppDispatch()
-
   const [idTaskDragOver, setIdTaskDragOver] = useState(null as string | null)
   const handleSetDragOverTask = (idTaskOver: string) => {
     if (idTaskOver !== idTaskDragOver) {
       setIdTaskDragOver(idTaskOver)
     }
   }
-  const moveTask = (idTask: string) => {
-    if (idTask !== idTaskDragOver && idTaskDragOver) {
-      dispatch(changeTaskLocation({ idList: idList, idTaskMoved: idTask, idTaskOver: idTaskDragOver }))
-    }
-  }
 
-  const moveTaskDnD = useCallback((dragIndex: number, hoverIndex: number) => {
+  const moveTaskDnD = useCallback((dragId: string, dragIndex: number, hoverIndex: number) => {
+    console.log(dragId)
     dispatch(changeTaskLocationDND({ idList, dragIndex, hoverIndex }))
   }, [])
 
@@ -62,6 +60,8 @@ export const TodoList: React.FC<PropsType> = ({
     setValue(e.value)
     dispatch(changeFilter({ filter: e.value, todoListsId: idList }))
   }
+
+
 
   const tasksElements = tasks.map((task, index) => {
     return <Task key={task.id}
@@ -150,6 +150,8 @@ export const TodoList: React.FC<PropsType> = ({
 
   const opacity = isDragging ? 0 : 1
   drag(drop(ref))
+
+
 
   return (
     <div ref={ref} style={{ opacity }}>

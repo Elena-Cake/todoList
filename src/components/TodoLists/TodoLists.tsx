@@ -12,7 +12,6 @@ export const TodoLists = () => {
     const dispatch = useAppDispatch()
 
     const todoLists = useAppSelector(state => state.todoLists.todoLists)
-    const [lists, setLists] = useState(todoLists)
 
     const tasks = useAppSelector(state => state.todoLists.tasks)
 
@@ -24,12 +23,6 @@ export const TodoLists = () => {
     const handleSetDragOverList = (idListOver: string) => {
         if (idListDragOver !== idListOver) {
             setIdListDragOver(idListOver)
-        }
-    }
-
-    const moveList = (idListMoved: string) => {
-        if (idListMoved !== idListDragOver && idListDragOver) {
-            dispatch(changeListsLocation({ idListMoved: idListMoved, idListOver: idListDragOver }))
         }
     }
 

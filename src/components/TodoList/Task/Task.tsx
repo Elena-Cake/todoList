@@ -15,10 +15,12 @@ type TaskPropsType = {
     idList: string;
     index: number
     handleSetDragOverTask: (idTaskOver: string) => void
-    moveTask: (dragIndex: number, hoverIndex: number) => void
+    moveTask: (dragId: string, dragIndex: number, hoverIndex: number) => void
 };
 
-export const Task: React.FC<TaskPropsType> = ({ task, idList, index, handleSetDragOverTask, moveTask }) => {
+export const Task: React.FC<TaskPropsType> = ({
+    task, idList, index, handleSetDragOverTask, moveTask
+}) => {
 
     const dispatch = useAppDispatch()
     const handleChangeTask = (text: string) => {
@@ -33,10 +35,10 @@ export const Task: React.FC<TaskPropsType> = ({ task, idList, index, handleSetDr
     //     e.preventDefault()
     //     // над чем был, но улетел
     // }
-    // const dragOverHandler = (e: DragEvent<HTMLLIElement>, idTaskOver: string) => {
+    // const dragOverHandler = (e: DragEvent<HTMLLIElement>) => {
     //     e.preventDefault()
-    //     handleSetDragOverTask(idTaskOver)
-    //     // над чем летит
+    //     getIdList()
+    // над чем летит
     // }
     // const dragEndHandler = (e: DragEvent<HTMLLIElement>, idTask: string) => {
     //     e.preventDefault()
@@ -103,7 +105,7 @@ export const Task: React.FC<TaskPropsType> = ({ task, idList, index, handleSetDr
             }
 
             // Time to actually perform the action
-            moveTask(dragIndex, hoverIndex)
+            moveTask(item.id, dragIndex, hoverIndex)
 
             // Note: we're mutating the monitor item here!
             // Generally it's better to avoid mutations,
@@ -133,12 +135,11 @@ export const Task: React.FC<TaskPropsType> = ({ task, idList, index, handleSetDr
         // draggable={true}
         // onDragStart={e => dragStartHandler(e, task.id)}
         // onDragLeave={e => dragLeaveHandler(e)}
-        // onDragOver={e => dragOverHandler(e, task.id)}
+        // onDragOver={e => dragOverHandler(e)}
         // onDragEnd={e => dragEndHandler(e, task.id)}
         >
-            <span className="p-inputgroup-addon">
-                <Checkbox checked={task.isDone} onChange={() => dispatch(changeCheckboxTask({ idTask: task.id, todoListsId: idList }))} />
-            </span>
+
+            <Checkbox checked={task.isDone} onChange={() => dispatch(changeCheckboxTask({ idTask: task.id, todoListsId: idList }))} />
             <TitleEdit title={task.title} editTitle={handleChangeTask} />
             <Button icon="pi pi-times" className="p-button-danger" onClick={() => { dispatch(removeTask({ idTask: task.id, todoListsId: idList })) }} />
         </li>

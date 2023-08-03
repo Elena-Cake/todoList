@@ -157,6 +157,8 @@ const todoSlice = createSlice({
             // state.tasks[action.payload.idList] = newLists
         },
         changeTaskLocationDND(state, action: PayloadAction<{ idList: string, dragIndex: number, hoverIndex: number }>) {
+            console.log('idList', action.payload.idList)
+
             state.tasks[action.payload.idList] =
                 update(state.tasks[action.payload.idList], {
                     $splice: [
