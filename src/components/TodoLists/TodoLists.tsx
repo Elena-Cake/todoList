@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import './TodoLists.css'
 import { TodoList } from '../TodoList/TodoList';
 import { AddItemForm } from '../AddItemForm/AddItemForm';
 import { useAppDispatch, useAppSelector } from '../../store/store';
-import { addTodoList, changeListsLocation } from '../../store/todoSlice';
+import { addTodoList, changeListsLocation, changeListsLocationDND } from '../../store/todoSlice';
+import { todoListType } from '../../types/types';
 
 
 export const TodoLists = () => {
@@ -11,6 +12,8 @@ export const TodoLists = () => {
     const dispatch = useAppDispatch()
 
     const todoLists = useAppSelector(state => state.todoLists.todoLists)
+    const [lists, setLists] = useState(todoLists)
+
     const tasks = useAppSelector(state => state.todoLists.tasks)
 
     const handleAddTodoList = (title: string) => {
@@ -30,7 +33,11 @@ export const TodoLists = () => {
         }
     }
 
-    const todoListsElements = todoLists.map((list) => {
+    const moveListDnD = useCallback((dragIndex: number, hoverIndex: number) => {
+        dispatch(changeListsLocationDND({ dragIndex, hoverIndex }))
+    }, [])
+
+    const todoListsElements = todoLists.map((list, index) => {
         let tasksForTodoList = tasks[list.id];
 
         if (list.filter === 'completed') {
@@ -46,7 +53,8 @@ export const TodoLists = () => {
                 tasks={tasksForTodoList}
                 filter={list.filter}
                 handleSetDragOverList={handleSetDragOverList}
-                moveList={moveList}
+                moveList={moveListDnD}
+                index={index}
             />
         );
     });

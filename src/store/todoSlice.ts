@@ -3,6 +3,7 @@ import { v1 } from 'uuid'
 import { FilterValuesType, SortValuesType, taskType, todoListType } from '../types/types'
 import { changeElemLocation } from '../utils/function-helpers'
 
+import update from 'immutability-helper'
 
 const idLists = [v1(), v1()]
 
@@ -79,15 +80,24 @@ const todoSlice = createSlice({
         },
         changeListsLocation(state, action: PayloadAction<{ idListMoved: string, idListOver: string }>) {
 
-            const listMoved = state.todoLists.find(list => list.id === action.payload.idListMoved)
-            const newLists = state.todoLists.filter(list => list.id !== action.payload.idListMoved)
-            let idElement = 0
-            newLists.forEach((list, i) => {
-                if (list.id === action.payload.idListOver) idElement = i
-            })
-            if (listMoved) newLists.splice(idElement, 0, listMoved)
-            state.todoLists = newLists
-            setListVisible({ idList: action.payload.idListOver })
+            // const listMoved = state.todoLists.find(list => list.id === action.payload.idListMoved)
+            // const newLists = state.todoLists.filter(list => list.id !== action.payload.idListMoved)
+            // let idElement = 0
+            // newLists.forEach((list, i) => {
+            //     if (list.id === action.payload.idListOver) idElement = i
+            // })
+            // if (listMoved) newLists.splice(idElement, 0, listMoved)
+            // state.todoLists = newLists
+            // setListVisible({ idList: action.payload.idListOver })
+        },
+        changeListsLocationDND(state, action: PayloadAction<{ dragIndex: number, hoverIndex: number }>) {
+            state.todoLists =
+                update(state.todoLists, {
+                    $splice: [
+                        [action.payload.dragIndex, 1],
+                        [action.payload.hoverIndex, 0, state.todoLists[action.payload.dragIndex] as todoListType],
+                    ],
+                })
         },
         setListGhost(state, action: PayloadAction<{ idList: string }>) {
             state.todoLists = state.todoLists.map(list => {
@@ -125,14 +135,14 @@ const todoSlice = createSlice({
             // setTasks({ ...tasks, [todoListsId]: changedTasksList });
         },
         changeTaskLocation(state, action: PayloadAction<{ idList: string, idTaskMoved: string, idTaskOver: string }>) {
-            const taskMoved = state.tasks[action.payload.idList].find(list => list.id === action.payload.idTaskMoved)
-            const newLists = state.tasks[action.payload.idList].filter(list => list.id !== action.payload.idTaskMoved)
-            let idElement = 0
-            newLists.forEach((list, i) => {
-                if (list.id === action.payload.idTaskOver) idElement = i
-            })
-            if (taskMoved) newLists.splice(idElement, 0, taskMoved)
-            state.tasks[action.payload.idList] = newLists
+            // const taskMoved = state.tasks[action.payload.idList].find(list => list.id === action.payload.idTaskMoved)
+            // const newLists = state.tasks[action.payload.idList].filter(list => list.id !== action.payload.idTaskMoved)
+            // let idElement = 0
+            // newLists.forEach((list, i) => {
+            //     if (list.id === action.payload.idTaskOver) idElement = i
+            // })
+            // if (taskMoved) newLists.splice(idElement, 0, taskMoved)
+            // state.tasks[action.payload.idList] = newLists
         },
         changeSortTasks(state, action: PayloadAction<{ idList: string }>) {
             state.todoLists = state.todoLists.map(list => {
@@ -165,7 +175,7 @@ const todoSlice = createSlice({
 export const {
     addTodoList, removeList, changeListTitle,
     changeFilter, changeListsLocation, setListGhost,
-    setListVisible,
+    setListVisible, changeListsLocationDND,
 
     addTask, removeTask, changeTaskText, changeCheckboxTask,
     changeTaskLocation, changeSortTasks
