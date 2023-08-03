@@ -118,7 +118,7 @@ export const TodoList: React.FC<PropsType> = ({
 
       // Get vertical middle
       const hoverMiddleX =
-        (hoverBoundingRect.right - hoverBoundingRect.left) / 2
+        (hoverBoundingRect.left - hoverBoundingRect.right) / 2
 
       // Determine mouse position
       const clientOffset = monitor.getClientOffset()
@@ -164,7 +164,7 @@ export const TodoList: React.FC<PropsType> = ({
   drag(drop(ref))
 
   return (
-    <div ref={ref}>
+    <div ref={ref} style={{ opacity }}>
       <Card
         className={`todo__list ${list.isGhost ? 'todo__list_type_ghost' : ''}`}
         draggable={true}
