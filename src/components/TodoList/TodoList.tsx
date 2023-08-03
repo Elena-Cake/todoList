@@ -1,4 +1,4 @@
-import React, { DragEvent, useState } from 'react';
+import React, { DragEvent, useState, useCallback } from 'react';
 import './TodoList.css';
 import { FilterValuesType, taskType, todoListType } from '../../types/types';
 import { AddItemForm } from '../AddItemForm/AddItemForm';
@@ -8,7 +8,7 @@ import { Button } from 'primereact/button';
 import { SelectButton, SelectButtonChangeEvent } from 'primereact/selectbutton';
 import { Task } from './Task/Task';
 import { useAppDispatch } from '../../store/store';
-import { addTask, changeFilter, changeListTitle, changeSortTasks, changeTaskLocation, removeList, setListGhost, setListVisible } from '../../store/todoSlice';
+import { addTask, changeFilter, changeListTitle, changeSortTasks, changeTaskLocation, changeTaskLocationDND, removeList, setListGhost, setListVisible } from '../../store/todoSlice';
 
 import type { Identifier, XYCoord } from 'dnd-core'
 import { useRef } from 'react'
@@ -43,6 +43,10 @@ export const TodoList: React.FC<PropsType> = ({
     }
   }
 
+  const moveTaskDnD = useCallback((dragIndex: number, hoverIndex: number) => {
+    dispatch(changeTaskLocationDND({ idList, dragIndex, hoverIndex }))
+  }, [])
+
   const handleAddTask = (inputValue: string) => {
     dispatch(addTask({ task: inputValue, todoListsId: idList }))
   }
@@ -59,28 +63,12 @@ export const TodoList: React.FC<PropsType> = ({
     dispatch(changeFilter({ filter: e.value, todoListsId: idList }))
   }
 
-  // const dragLeaveHandler = (e: DragEvent<HTMLDivElement>, idListLeave: string) => {
-  //   e.preventDefault()
-  //   dispatch(setListVisible({ idList: idListLeave }))
-  //   // над чем был, но улетел
-  // }
-  // const dragOverHandler = (e: DragEvent<HTMLDivElement>, idListOver: string) => {
-  //   e.preventDefault()
-  //   handleSetDragOverList(idListOver)
-  //   dispatch(setListGhost({ idList: idListOver }))
-  //   // над чем летит
-  // }
-  // const dragEndHandler = (e: DragEvent<HTMLDivElement>, idList: string) => {
-  //   e.preventDefault()
-  //   moveList(idList)
-  //   dispatch(setListVisible({ idList }))
-  //   // что бросил
-  // }
-  const tasksElements = tasks.map(task => {
+  const tasksElements = tasks.map((task, index) => {
     return <Task key={task.id}
       idList={idList} task={task}
       handleSetDragOverTask={handleSetDragOverTask}
-      moveTask={moveTask}
+      moveTask={moveTaskDnD}
+      index={index}
     />
   })
 
@@ -168,10 +156,6 @@ export const TodoList: React.FC<PropsType> = ({
       <Card
         className={`todo__list ${list.isGhost ? 'todo__list_type_ghost' : ''}`}
         draggable={true}
-      // onDragLeave={e => dragLeaveHandler(e, idList)}
-      // onDragOver={e => dragOverHandler(e, idList)}
-      // onDragEnd={e => dragEndHandler(e, idList)}
-
       >
         <h2> <TitleEdit title={list.title} editTitle={handleChangeTitle} /></h2>
         <Button onClick={() => dispatch(removeList({ idList }))} icon="pi pi-times" className="p-button-danger btn-close" />

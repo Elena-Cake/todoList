@@ -5,7 +5,7 @@ import { changeElemLocation } from '../utils/function-helpers'
 
 import update from 'immutability-helper'
 
-const idLists = [v1(), v1()]
+const idLists = [v1(), v1(), v1()]
 
 const initialState = {
     todoLists: [
@@ -18,6 +18,13 @@ const initialState = {
         },
         {
             id: idLists[1],
+            title: 'What to read',
+            filter: 'all',
+            sort: 'notsorted',
+            isGhost: false
+        },
+        {
+            id: idLists[2],
             title: 'What to do',
             filter: 'all',
             sort: 'notsorted',
@@ -32,6 +39,11 @@ const initialState = {
             { id: v1(), isDone: true, title: 'redux' },
         ] as taskType[],
         [idLists[1]]: [
+            { id: v1(), isDone: false, title: 'react' },
+            { id: v1(), isDone: true, title: 'redux' },
+            { id: v1(), isDone: false, title: 'doca' },
+        ] as taskType[],
+        [idLists[2]]: [
             { id: v1(), isDone: false, title: 'learn' },
             { id: v1(), isDone: true, title: 'codding' },
         ] as taskType[]
@@ -144,6 +156,15 @@ const todoSlice = createSlice({
             // if (taskMoved) newLists.splice(idElement, 0, taskMoved)
             // state.tasks[action.payload.idList] = newLists
         },
+        changeTaskLocationDND(state, action: PayloadAction<{ idList: string, dragIndex: number, hoverIndex: number }>) {
+            state.tasks[action.payload.idList] =
+                update(state.tasks[action.payload.idList], {
+                    $splice: [
+                        [action.payload.dragIndex, 1],
+                        [action.payload.hoverIndex, 0, state.tasks[action.payload.idList][action.payload.dragIndex] as taskType],
+                    ],
+                })
+        },
         changeSortTasks(state, action: PayloadAction<{ idList: string }>) {
             state.todoLists = state.todoLists.map(list => {
                 if (list.id === action.payload.idList) {
@@ -178,7 +199,7 @@ export const {
     setListVisible, changeListsLocationDND,
 
     addTask, removeTask, changeTaskText, changeCheckboxTask,
-    changeTaskLocation, changeSortTasks
+    changeTaskLocation, changeSortTasks, changeTaskLocationDND
 } = todoSlice.actions
 export default todoSlice.reducer
 
